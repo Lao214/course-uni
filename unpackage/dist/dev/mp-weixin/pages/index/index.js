@@ -102,6 +102,17 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
+  if (!_vm._isMounted) {
+    _vm.e0 = function ($event) {
+      _vm.showOne = false
+    }
+    _vm.e1 = function ($event) {
+      _vm.showTwo = false
+    }
+    _vm.e2 = function ($event) {
+      _vm.showTwo = true
+    }
+  }
 }
 var recyclableRender = false
 var staticRenderFns = []
@@ -135,7 +146,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -157,20 +168,169 @@ exports.default = void 0;
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
-      username: '我是用户名',
-      password: '我是密码'
+      showOne: false,
+      showTwo: false,
+      showItem: 0,
+      inputValue: '',
+      inputValue2: '',
+      list: []
     };
   },
+  onLoad: function onLoad() {
+    this.getData();
+  },
   methods: {
-    submit: function submit() {
-      alert('用户名：' + this.username + '密码：' + this.password + '，恭喜你登录成功');
+    setData: function setData() {
+      // 存储数据
+      uni.setStorage({
+        key: 'list',
+        data: this.list,
+        success: function success() {
+          console.log('数据存储成功');
+        }
+      });
+    },
+    getData: function getData() {
+      var _this = this;
+      // 获取数据
+      uni.getStorage({
+        key: 'list',
+        success: function success(res) {
+          // 将获取到的数据赋值给Vue实例的data属性中的变量
+          _this.list = res.data;
+        }
+      });
+    },
+    gotoNotes: function gotoNotes() {
+      uni.navigateTo({
+        url: '/pages/notes/notes'
+      });
+    },
+    toggleCollapse: function toggleCollapse(item) {
+      if (item.subList && item.subList.length > 0) {
+        item.isCollapsed = !item.isCollapsed;
+      }
+      this.setData();
+    },
+    chooseAll: function chooseAll(item) {
+      if (item.subList && item.subList.length > 0) {
+        item.isCollapsed = true;
+      }
+      if (item.done === false) {
+        item.subList.forEach(function (element) {
+          element.done = true;
+        });
+        item.checkedCount = item.subList.length;
+        item.done = true;
+      } else if (item.done === true) {
+        item.subList.forEach(function (element) {
+          element.done = false;
+        });
+        item.checkedCount = 0;
+        item.done = false;
+      }
+      this.setData();
+    },
+    chooseSingle: function chooseSingle(item, subItem) {
+      subItem.done = !subItem.done;
+      if (subItem.done) {
+        item.checkedCount++;
+      } else if (!subItem.done) {
+        item.checkedCount--;
+      }
+      if (item.checkedCount === 0) {
+        item.done = false;
+      } else if (item.checkedCount === item.subList.length) {
+        item.done = true;
+      }
+      this.setData();
+    },
+    addTask: function addTask(index) {
+      this.showOne = true;
+      this.showItem = index;
+    },
+    confirmAddTask: function confirmAddTask() {
+      this.list[this.showItem].subList.push({
+        title: this.inputValue,
+        done: false
+      });
+      this.showOne = false;
+      this.list[this.showItem].isCollapsed = true;
+      uni.showToast({
+        title: '添加成功',
+        icon: 'success',
+        duration: 2000
+      });
+      this.setData();
+    },
+    confirmAddMatter: function confirmAddMatter() {
+      this.list.push({
+        title: this.inputValue2,
+        done: false,
+        checkedCount: 0,
+        subList: [],
+        isCollapsed: false
+      });
+      this.showTwo = false;
+      uni.showToast({
+        title: '添加成功',
+        icon: 'success',
+        duration: 2000
+      });
+      this.setData();
     }
   }
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
